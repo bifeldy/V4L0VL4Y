@@ -191,13 +191,11 @@
     <Image Include="val.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
     <None Include="imgui.ini" />
     <None Include="README.md" />
     <None Include="Valovlay.aps" />
-    <None Include="x64\Release\Valovlay.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="x64\Release\Roboto-Light.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

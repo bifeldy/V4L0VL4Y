@@ -124,10 +124,8 @@
   <ItemGroup>
     <None Include="Valovlay.aps" />
     <None Include="imgui.ini" />
-    <None Include="x64\Release\Valovlay.exe" />
     <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="x64\Release\Roboto-Light.ttf" />
+    <None Include=".gitignore" />
+    <None Include=".gitattributes" />
   </ItemGroup>
 </Project>
