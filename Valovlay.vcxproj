@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
+    <None Include="README.md" />
     <None Include="Valovlay.aps" />
     <None Include="x64\Release\Valovlay.exe" />
   </ItemGroup>
