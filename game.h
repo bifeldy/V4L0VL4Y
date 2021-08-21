@@ -220,7 +220,7 @@ namespace game
         }
     }
 
-    void handleKeyPresses()
+    void handleOtherKeyPresses()
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
             g_overlay_visible = !g_overlay_visible;
@@ -365,7 +365,11 @@ namespace game
 
             while (!glfwWindowShouldClose(g_window))
             {
-                handleKeyPresses();
+                if (GetAsyncKeyState(VK_F12) & 1) {
+                    break;
+                }
+
+                handleOtherKeyPresses();
                 runRenderTick();
             }
             stop();
