@@ -124,5 +124,9 @@
   <ItemGroup>
     <None Include="Valovlay.aps" />
     <None Include="imgui.ini" />
+    <None Include="x64\Release\Valovlay.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="x64\Release\Roboto-Light.ttf" />
   </ItemGroup>
 </Project>
