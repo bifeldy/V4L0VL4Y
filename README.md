@@ -28,7 +28,7 @@ V4L0R4NT 0V3RL4Y 3XT3RN4L 35P CH34T
 
 <br />
 
-0R19IN4L FR0M
+0R19IN4LLY FR0M
 [vexternal](https://github.com/0xLuca/vexternal)
 C0MB1N3D W1TH
 [EFI_Driver_Access](https://github.com/TheCruZ/EFI_Driver_Access)
