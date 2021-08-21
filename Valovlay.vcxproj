@@ -177,8 +177,7 @@
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="memory.h" />
-    <ClInclude Include="data_type.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="offset.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="resource.h" />

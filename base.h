@@ -1,5 +1,7 @@
 #pragma once
 
+#include "driver.h"
+
 #define GLFW_EXPOSE_NATIVE_WIN32
 
 #include "GL/glew.h"
@@ -7,14 +9,10 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "memory.h"
-#include "driver.h"
-
-#include <iostream>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
-#include <windows.h>
 #include <tlHelp32.h>
+#include <string>
 
 namespace base
 {
@@ -57,14 +55,6 @@ namespace base
             }
         }
         return 0;
-    }
-
-    static uintptr_t getBaseAddress(uintptr_t pid)
-    {
-        memory::Unprotect(driver::GetBaseAddress);
-        uintptr_t BaseAddr = driver::GetBaseAddress(pid);
-        memory::Protect(driver::GetBaseAddress);
-        return BaseAddr;
     }
 
     void glfwErrorCallback(int error, const char* description)
@@ -196,7 +186,7 @@ namespace base
         std::cout << "-> valorantWindow :: " << valorantWindow << std::endl;
 
         std::cout << "Getting Base Address ..." << std::endl;
-        g_base_address = getBaseAddress(g_pid);
+        g_base_address = driver::GetBaseAddress(g_pid);
         if (!g_base_address) {
             std::cout << "Could Not Get Base Address!" << std::endl;
             return false;

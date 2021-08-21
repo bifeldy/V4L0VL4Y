@@ -1,58 +1,41 @@
 // Valovlay.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "memory.h"
-#include "driver.h"
+#include "stdafx.h"
 #include "game.h"
-
-#include <iostream>
-#include <cstdint>
 
 bool CheckDriverStatus() {
     std::cout << "Checking Driver Status ..." << std::endl;
 
-    memory::Unprotect(driver::GetBaseAddress);
     uintptr_t BaseAddr = driver::GetBaseAddress(driver::currentProcessId);
     std::cout << "-> BaseAddr :: " << BaseAddr << std::endl;
-    if (BaseAddr == 0) {
+    if (BaseAddr == 0)
+    {
         return false;
     }
-    memory::Protect(driver::GetBaseAddress);
 
     int icheck = 29;
     NTSTATUS status = 0;
     int checked = driver::read<int>(driver::currentProcessId, (uintptr_t) &icheck, &status);
     std::cout << "-> checked :: " << checked << std::endl;
     std::cout << "-> icheck :: " << icheck << std::endl;
-    if (checked != icheck) {
+    if (checked != icheck)
+    {
         return false;
     }
 
     return true;
 }
 
-void LoadProtectedFunctions()
-{
-    // TODO :: Please Implement With Your Own (Function) - (someRandomChoosedOtherFunction) - 0x3
-    // https://github.com/TheCruZ/Direct-EFI-Apex-Cheat/blob/master/CRZAimbot/Main.cpp#L33
-    // Or Banned, Caused Of Vanguard Scan All Running Apps ^_^
-}
-
-int main()
+int main(int argc, char* argv[])
 {
     std::cout << "Welcome To Valorant Overlay!" << std::endl;
     std::cout << "Last Build By Bifeldy :: 17-08-2021" << std::endl;
     std::cout << "Have Fun~" << std::endl;
 
-    std::cout << "Protecting Function ..." << std::endl;
-    LoadProtectedFunctions();
-    memory::Protect(LoadProtectedFunctions);
-
-    memory::Unprotect(driver::initialize);
     bool ready = false;
     if (driver::initialize())
     {
-        memory::Unprotect(CheckDriverStatus);
         if (CheckDriverStatus())
         {
             ready = true;
@@ -69,18 +52,15 @@ int main()
             memset(VarName, 0, sizeof(VarName));
             // memset(VariableName.Buffer, 0, VariableName.Length);
             // VariableName.Length = 0;
-            Beep(1250, 500);
-            Beep(1250, 500);
+            Beep(1250, 1000);
             std::cout << "No EFI Driver Found ..." << std::endl;
         }
-        memory::Protect(CheckDriverStatus);
     }
     else
     {
-        std::cout << "Connection To The Driver Failed ..." << std::endl;
+        std::cout << "Failed To Communicate With The Driver ..." << std::endl;
         Beep(1250, 500);
     }
-    memory::Protect(driver::initialize);
 
     if (ready)
     {

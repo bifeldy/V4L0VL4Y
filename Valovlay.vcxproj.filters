@@ -44,10 +44,7 @@
     <ClInclude Include="driver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="data_type.h">
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="offset.h">
@@ -63,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\GL\eglew.h">
@@ -105,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,12 +1,10 @@
 #pragma once
 
-#include "memory.h"
-#include "driver.h"
-#include "base.h"
-
-#include "vector.h"
 #include "defs.h"
+#include "vector.h"
 #include "offset.h"
+
+#include "base.h"
 
 #include <vector>
 

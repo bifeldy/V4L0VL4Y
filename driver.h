@@ -1,7 +1,6 @@
 #pragma once
 
-#include "memory.h"
-
+#include <iostream>
 #include <cstdint>
 #include <functional>
 
@@ -51,7 +50,6 @@ namespace driver
 
     void SendCommand(MemoryCommand* cmd)
     {
-        memory::Protect(_ReturnAddress());
         wchar_t VarName[] = { 'F','a','s','t','B','o','o','t','O','p','t','i','o','n','\0' };
         UNICODE_STRING FVariableName = UNICODE_STRING();
         FVariableName.Buffer = VarName;
@@ -63,12 +61,10 @@ namespace driver
         memset(VarName, 0, sizeof(VarName));
         // memset(VariableName.Buffer, 0, VariableName.Length);
         // VariableName.Length = 0;
-        memory::Unprotect(_ReturnAddress());
     }
 
     NTSTATUS copy_memory(uintptr_t src_process_id, uintptr_t src_address, uintptr_t dest_process_id, uintptr_t dest_address, size_t size)
     {
-        memory::Protect(_ReturnAddress());
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
         cmd.operation = BASE_OPERATION * 0x823;
@@ -79,46 +75,29 @@ namespace driver
         cmd.data[3] = (uintptr_t)dest_address;
         cmd.data[4] = (uintptr_t)size;
         cmd.data[5] = (uintptr_t)&result;
-        memory::Unprotect(SendCommand);
         SendCommand(&cmd);
-        memory::Protect(SendCommand);
-        memory::Unprotect(_ReturnAddress());
         return (NTSTATUS)result;
     }
 
    NTSTATUS read_memory(uintptr_t process_id, uintptr_t address, uintptr_t buffer, size_t size)
     {
-        memory::Protect(_ReturnAddress());
-        memory::Unprotect(copy_memory);
-        NTSTATUS result = copy_memory(process_id, address, currentProcessId, buffer, size);
-        memory::Protect(copy_memory);
-        memory::Unprotect(_ReturnAddress());
-        return result;
+        return copy_memory(process_id, address, currentProcessId, buffer, size);
     }
 
    NTSTATUS write_memory(uintptr_t process_id, uintptr_t address, uintptr_t buffer, size_t size)
     {
-        memory::Protect(_ReturnAddress());
-        memory::Unprotect(copy_memory);
-        NTSTATUS result = copy_memory(currentProcessId, buffer, process_id, address, size);
-        memory::Protect(copy_memory);
-        memory::Unprotect(_ReturnAddress());
-        return result;
+        return copy_memory(currentProcessId, buffer, process_id, address, size);
     }
 
    uintptr_t GetBaseAddress(uintptr_t pid)
     {
-        memory::Protect(_ReturnAddress());
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
         cmd.operation = BASE_OPERATION * 0x289;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = pid;
         cmd.data[1] = (uintptr_t)&result;
-        memory::Unprotect(SendCommand);
         SendCommand(&cmd);
-        memory::Protect(SendCommand);
-        memory::Unprotect(_ReturnAddress());
         return result;
     }
 
@@ -175,17 +154,13 @@ namespace driver
         IMAGE_DOS_HEADER dos_header = { 0 };
         IMAGE_NT_HEADERS64 nt_headers = { 0 };
 
-        memory::Unprotect(read_memory);
         read_memory(4, kernel_module_base, (uintptr_t)&dos_header, sizeof(dos_header));
-        memory::Protect(read_memory);
         if (dos_header.e_magic != IMAGE_DOS_SIGNATURE)
         {
             return 0;
         }
 
-        memory::Unprotect(read_memory);
         read_memory(4, kernel_module_base + dos_header.e_lfanew, (uintptr_t)&nt_headers, sizeof(nt_headers));
-        memory::Protect(read_memory);
         if (nt_headers.Signature != IMAGE_NT_SIGNATURE)
         {
             return 0;
@@ -200,9 +175,7 @@ namespace driver
 
         const auto export_data = reinterpret_cast<PIMAGE_EXPORT_DIRECTORY>(VirtualAlloc(nullptr, export_base_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 
-        memory::Unprotect(read_memory);
         read_memory(4, kernel_module_base + export_base, (uintptr_t)export_data, export_base_size);
-        memory::Protect(read_memory);
         // if (!ReadMemory(device_handle, kernel_module_base + export_base, export_data, export_base_size))
         // {
         //     VirtualFree(export_data, 0, MEM_RELEASE);
@@ -238,7 +211,6 @@ namespace driver
    bool initialize()
     {
         std::cout << "Initialize Driver ..." << std::endl;
-        memory::Protect(_ReturnAddress());
 
         currentProcessId = GetCurrentProcessId();
         std::cout << "-> currentProcessId :: " << currentProcessId << std::endl;
@@ -260,23 +232,17 @@ namespace driver
         std::cout << "-> myRtlAdjustPrivilege :: " << (uintptr_t)myRtlAdjustPrivilege << std::endl;
         // memset(rtlajp, 0, sizeof(rtlajp));
 
-        memory::Unprotect((void*)SetSystemEnvironmentPrivilege);
         NTSTATUS status = SetSystemEnvironmentPrivilege(true, &SeSystemEnvironmentWasEnabled);
-        memory::Protect(SetSystemEnvironmentPrivilege);
         if (!NT_SUCCESS(status)) {
             std::cout << "Please Run As Administrator!" << std::endl;
-            memory::Unprotect(_ReturnAddress());
             return false;
         }
 
-        memory::Unprotect(GetKernelModuleAddress);
         BYTE nstosname[] = { 'n','t','o','s','k','r','n','l','.','e','x','e',0 };
         kernelModuleAddress = GetKernelModuleAddress((char*)nstosname);
         memset(nstosname, 0, sizeof(nstosname));
         std::cout << "-> kernelModuleAddress :: " << (uintptr_t)kernelModuleAddress << std::endl;
-        memory::Protect(GetKernelModuleAddress);
 
-        memory::Unprotect(GetKernelModuleExport);
         BYTE pbid[] = { 'P','s','L','o','o','k','u','p','P','r','o','c','e','s','s','B','y','P','r','o','c','e','s','s','I','d',0 };
         kernel_PsLookupProcessByProcessId = GetKernelModuleExport(kernelModuleAddress, (char*)pbid);
         std::cout << "-> kernel_PsLookupProcessByProcessId :: " << (uintptr_t)kernel_PsLookupProcessByProcessId << std::endl;
@@ -289,7 +255,6 @@ namespace driver
         kernel_MmCopyVirtualMemory = GetKernelModuleExport(kernelModuleAddress, (char*)mmcp);
         std::cout << "-> kernel_MmCopyVirtualMemory :: " << (uintptr_t)kernel_MmCopyVirtualMemory << std::endl;
         memset(mmcp, 0, sizeof(mmcp));
-        memory::Protect(GetKernelModuleExport);
 
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
@@ -299,39 +264,28 @@ namespace driver
         cmd.data[1] = kernel_PsGetProcessSectionBaseAddress;
         cmd.data[2] = kernel_MmCopyVirtualMemory;
         cmd.data[3] = (uintptr_t)&result;
-        memory::Unprotect(SendCommand);
         SendCommand(&cmd);
-        memory::Protect(SendCommand);
 
-        memory::Unprotect(_ReturnAddress());
         return result;
     }
 
     template <typename T> T read(const uintptr_t process_id, const uintptr_t address, PNTSTATUS out_status = 0)
     {
-        memory::Protect(_ReturnAddress());
         T buffer{ };
-        memory::Unprotect(read_memory);
         NTSTATUS status = read_memory(process_id, address, (uintptr_t) &buffer, sizeof(T));
-        memory::Protect(read_memory);
         if (out_status)
         {
             *out_status = status;
         }
-        memory::Unprotect(_ReturnAddress());
         return buffer;
     }
 
     template <typename T> void write(const uintptr_t process_id, const uintptr_t address, const T& buffer, PNTSTATUS out_status = 0)
     {
-        memory::Protect(_ReturnAddress());
-        memory::Unprotect(write_memory);
         NTSTATUS status = write_memory(process_id, address, (uintptr_t) &buffer, sizeof(T));
-        memory::Protect(write_memory);
         if (out_status)
         {
             *out_status = status;
         }
-        memory::Unprotect(_ReturnAddress());
     }
 };
