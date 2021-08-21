@@ -31,11 +31,22 @@ bool CheckDriverStatus() {
     return true;
 }
 
+void LoadProtectedFunctions()
+{
+    // TODO :: Please Implement With Your Own (Function) - (someRandomChoosedOtherFunction) - 0x3
+    // https://github.com/TheCruZ/Direct-EFI-Apex-Cheat/blob/master/CRZAimbot/Main.cpp#L33
+    // Or Banned, Caused Of Vanguard Scan All Running Apps ^_^
+}
+
 int main()
 {
     std::cout << "Welcome To Valorant Overlay!" << std::endl;
     std::cout << "Last Build By Bifeldy :: 17-08-2021" << std::endl;
     std::cout << "Have Fun~" << std::endl;
+
+    std::cout << "Protecting Function ..." << std::endl;
+    LoadProtectedFunctions();
+    memory::Protect(LoadProtectedFunctions);
 
     memory::Unprotect(driver::initialize);
     bool ready = false;
