@@ -218,6 +218,59 @@ namespace game
         }
     }
 
+    void AimLock(Vector3 Target) {
+
+        // std::cout << "Target :: " << Target.x << " :: " << Target.y << " :: " << Target.z << " :: " << std::endl;
+
+        // Vector3 local_camera_position = read<Vector3>(g_pid, g_camera_manager + offset::camera_position);
+        // Vector3 Delta = Vector3((local_camera_position.x - Target.x), (local_camera_position.y - Target.y), (local_camera_position.z - Target.z));
+        // float hyp = sqrtf(Delta.x * Delta.x + Delta.y * Delta.y + Delta.z * Delta.z);
+        
+        // Vector3 Rotation{};
+        // Rotation.x = acosf(Delta.z / hyp) * (float)(RadianToURotation);
+        // Rotation.y = atanf(Delta.y / Delta.x) * (float)(RadianToURotation);
+        // Rotation.z = 0;
+
+        // Rotation.x += 270.f;
+        // if (Rotation.x > 360.f) {
+        //     Rotation.x -= 360.f;
+        // }
+        // if (Delta.x >= 0.0f) {
+        //     Rotation.y += 180.0f;
+        // }
+        // if (Rotation.y < 0.f) {
+        //     Rotation.y += 360.f;
+        // }
+
+        // FIX :: Mouse Movement To Target
+        // write<Vector3>(g_pid, g_camera_manager + offset::camera_rotation, Rotation);
+
+    }
+
+    Vector3* GetBestTarget()
+    {
+        float oldDistance = FLT_MAX;
+        float newDistance = 0;
+        Vector3* target = nullptr;
+
+        Vector3 local_camera_position = read<Vector3>(g_pid, g_camera_manager + offset::camera_position);
+        std::vector<Enemy> local_enemy_collection = enemy_collection;
+
+        for (auto local_enemy : local_enemy_collection)
+        {
+            Vector3 enemy_head_position = getBonePosition(local_enemy, 8);
+            Vector3 angleTo = CalcAngle(local_camera_position, enemy_head_position);
+            newDistance = local_camera_position.Distance(angleTo);
+            if (newDistance < oldDistance)
+            {
+                oldDistance = newDistance;
+                target = &enemy_head_position;
+            }
+        }
+
+        return target;
+    }
+
     void handleOtherKeyPresses()
     {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
@@ -230,6 +283,14 @@ namespace game
                 showValorantWindow();
             }
         }
+
+        // if (GetAsyncKeyState(VK_LBUTTON) & 1) {
+        //     Vector3* bestTarget = GetBestTarget();
+        //     if (bestTarget != nullptr)
+        //     {
+        //         AimLock(*bestTarget);
+        //     }
+        // }
     }
 
     void runRenderTick()
@@ -252,6 +313,13 @@ namespace game
                 ImGui::End();
             }
         }
+
+        // Vector3 camera_position = read<Vector3>(g_pid, g_camera_manager + offset::camera_position);
+        // Vector3 camera_rotation = read<Vector3>(g_pid, g_camera_manager + offset::camera_rotation);
+        // float camera_fov = read<float>(g_pid, g_camera_manager + offset::camera_fov);
+
+        // std::cout << "camera_position :: " << camera_position.x << " :: " << camera_position.y << " :: " << camera_position.z << " :: " << std::endl;
+        // std::cout << "camera_rotation :: " << camera_rotation.x << " :: " << camera_rotation.y << " :: " << camera_rotation.z << " :: " << std::endl;
 
         overlayEnd();
     }
@@ -357,18 +425,15 @@ namespace game
         if (initialize()) {
 
             handleOffset = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)getOffset, nullptr, NULL, nullptr);
-            if (handleOffset) {
-                CloseHandle(handleOffset);
-            }
 
             while (!glfwWindowShouldClose(g_window))
             {
+                runRenderTick();
+                handleOtherKeyPresses();
+
                 if (GetAsyncKeyState(VK_F12) & 1) {
                     break;
                 }
-
-                handleOtherKeyPresses();
-                runRenderTick();
             }
             stop();
         }

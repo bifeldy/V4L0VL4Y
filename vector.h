@@ -255,3 +255,60 @@ Vector2 worldToScreen(Vector3 world_location, Vector3 position, Vector3 rotation
 
     return screen_location;
 }
+
+float RadianToDegree(float radian)
+{
+    return radian * (180 / M_PI);
+}
+
+float DegreeToRadian(float degree)
+{
+    return degree * (M_PI / 180);
+
+}
+
+Vector3 RadianToDegree(Vector3 radians)
+{
+    Vector3 degrees;
+    degrees.x = radians.x * (180 / M_PI);
+    degrees.y = radians.y * (180 / M_PI);
+    degrees.z = radians.z * (180 / M_PI);
+    return degrees;
+}
+
+Vector3 DegreeToRadian(Vector3 degrees)
+{
+    Vector3 radians;
+    radians.x = degrees.x * (M_PI / 180);
+    radians.y = degrees.y * (M_PI / 180);
+    radians.z = degrees.z * (M_PI / 180);
+    return radians;
+}
+
+void ClampAngle(Vector3& angle) {
+    if (angle.x > 89.0f) angle.x = 89.f;
+    if (angle.x < -89.0f) angle.x = -89.f;
+
+    if (angle.y > 180.f) angle.y = 180.f;
+    if (angle.y < -180.f) angle.y = -180.f;
+
+    angle.z = 0.0f;
+}
+
+void Normalise(Vector3& angle) {
+    if (angle.x > 89.0f) angle.x -= 180.0f;
+    if (angle.x < -89.0f) angle.x += 180.0f;
+
+    while (angle.y > 180) angle.y -= 360.f;
+    while (angle.y < -180) angle.y += 360.f;
+}
+
+Vector3 CalcAngle(Vector3 src, Vector3 dst)
+{
+    Vector3 angle;
+    angle.x = -atan2f(dst.x - src.x, dst.y - src.y) / M_PI * 180.0f + 180.0f;
+    angle.y = asinf((dst.z - src.z) / src.Distance(dst)) * 180.0f / M_PI;
+    angle.z = 0.0f;
+
+    return angle;
+}
