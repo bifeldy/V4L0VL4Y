@@ -4,8 +4,8 @@
 
 namespace offset
 {
-	constexpr uint64_t uworld_key = 0x84F65B8;
-	constexpr uint64_t uworld_state = 0x84F6580;
+	constexpr uint64_t uworld_key = 0x87109B8;
+	constexpr uint64_t uworld_state = 0x8710980;
 	constexpr uint64_t game_instance = 0x1A8;
 	constexpr uint64_t persistent_level = 0x38;
 	constexpr uint64_t local_player_array = 0x40;
