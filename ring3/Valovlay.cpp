@@ -29,9 +29,10 @@ bool CheckDriverStatus() {
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Welcome To Valorant Overlay!" << std::endl;
-    std::cout << "Last Build By Bifeldy :: 17-08-2021" << std::endl;
-    std::cout << "Have Fun~" << std::endl;
+    std::cout << "Welcome To Valorant Overlay! :: Ring3" << std::endl;
+    std::cout << "Efi :: Bifeldy-Driver :: Ring0" << std::endl;
+    std::cout << "Last Build @ Bifeldy :: 26-08-2021" << std::endl;
+    std::cout << "Good Luck & Have Fun~" << std::endl;
 
     bool ready = false;
     if (driver::initialize())
@@ -42,7 +43,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            wchar_t VarName[] = { 'F','a','s','t','B','o','o','t','O','p','t','i','o','n','\0' };
+            wchar_t VarName[] = { 'B','i','f','e','l','d','y','-','D','r','i','v','e','r','\0' };
             UNICODE_STRING FVariableName = UNICODE_STRING();
             FVariableName.Buffer = VarName;
             FVariableName.Length = 28;

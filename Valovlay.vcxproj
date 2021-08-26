@@ -157,12 +157,12 @@
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Valovlay.cpp" />
+    <ClCompile Include="ring3\Valovlay.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base.h" />
-    <ClInclude Include="driver.h" />
-    <ClInclude Include="game.h" />
+    <ClInclude Include="ring3\base.h" />
+    <ClInclude Include="ring3\driver.h" />
+    <ClInclude Include="ring3\game.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
@@ -177,11 +177,11 @@
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="offset.h" />
-    <ClInclude Include="defs.h" />
+    <ClInclude Include="ring3\stdafx.h" />
+    <ClInclude Include="ring3\offset.h" />
+    <ClInclude Include="ring3\defs.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="vector.h" />
+    <ClInclude Include="ring3\vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Valovlay.rc" />

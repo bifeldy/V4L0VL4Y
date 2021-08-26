@@ -50,7 +50,7 @@ namespace driver
 
     void SendCommand(MemoryCommand* cmd)
     {
-        wchar_t VarName[] = { 'F','a','s','t','B','o','o','t','O','p','t','i','o','n','\0' };
+        wchar_t VarName[] = { 'B','i','f','e','l','d','y','-','D','r','i','v','e','r','\0' };
         UNICODE_STRING FVariableName = UNICODE_STRING();
         FVariableName.Buffer = VarName;
         FVariableName.Length = 28;
@@ -67,7 +67,7 @@ namespace driver
     {
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
-        cmd.operation = BASE_OPERATION * 0x823;
+        cmd.operation = BASE_OPERATION * 0x45 * 0x2;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = (uintptr_t)src_process_id;
         cmd.data[1] = (uintptr_t)src_address;
@@ -93,7 +93,7 @@ namespace driver
     {
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
-        cmd.operation = BASE_OPERATION * 0x289;
+        cmd.operation = BASE_OPERATION * 0x45 * 0x4;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = pid;
         cmd.data[1] = (uintptr_t)&result;
@@ -258,7 +258,7 @@ namespace driver
 
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
-        cmd.operation = BASE_OPERATION * 0x612;
+        cmd.operation = BASE_OPERATION * 0x45 * 0x3;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = kernel_PsLookupProcessByProcessId;
         cmd.data[1] = kernel_PsGetProcessSectionBaseAddress;
