@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Valovlay-Ring3", "Valovlay-Ring3\Valovlay-Ring3.vcxproj", "{B35CFA8D-C6C6-42FA-A6EB-D7A617FB8DA2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Valovlay-Ring0", "Valovlay-Ring0\Valovlay-Ring0.vcxproj", "{527AFE76-BC24-4EBF-B1F6-9C52A82D0B98}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B35CFA8D-C6C6-42FA-A6EB-D7A617FB8DA2}.Release|x64.ActiveCfg = Release|x64
+		{B35CFA8D-C6C6-42FA-A6EB-D7A617FB8DA2}.Release|x64.Build.0 = Release|x64
+		{527AFE76-BC24-4EBF-B1F6-9C52A82D0B98}.Release|x64.ActiveCfg = Release|x64
+		{527AFE76-BC24-4EBF-B1F6-9C52A82D0B98}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64DD9CC4-F037-4329-877D-5E654250D826}
+	EndGlobalSection
+EndGlobal

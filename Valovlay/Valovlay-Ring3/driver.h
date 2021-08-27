@@ -67,7 +67,7 @@ namespace driver
     {
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
-        cmd.operation = BASE_OPERATION * 0x45 * 0x2;
+        cmd.operation = BASE_OPERATION * 0x45 * 0x3;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = (uintptr_t)src_process_id;
         cmd.data[1] = (uintptr_t)src_address;
@@ -258,7 +258,7 @@ namespace driver
 
         uintptr_t result = 0;
         MemoryCommand cmd = MemoryCommand();
-        cmd.operation = BASE_OPERATION * 0x45 * 0x3;
+        cmd.operation = BASE_OPERATION * 0x45 * 0x2;
         cmd.magic = COMMAND_MAGIC;
         cmd.data[0] = kernel_PsLookupProcessByProcessId;
         cmd.data[1] = kernel_PsGetProcessSectionBaseAddress;
