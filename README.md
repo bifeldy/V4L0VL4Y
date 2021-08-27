@@ -34,7 +34,9 @@ V4L0R4NT 0V3RL4Y 3XT3RN4L 35P CH34T
   - T3R4KH1R `exit`
 * L4NJUT NY4L41N W1ND0W5NY4
   - K4L4U 83RH451L B1454NY4 4D4 W4RN4 81RU P4S W1ND0W5 L04D1N9
-* T4RUH `Valovlay\Valovlay-Ring3\Roboto-Light.ttf` D4L4M 1 F0LD3R D3N94N `Valovlay\x64\Release\Valovlay-Ring3.exe`
+* T4RUH D4L4M 1 F0LD3R
+  - `Valovlay\Valovlay-Ring3\Roboto-Light.ttf`
+  - `Valovlay\x64\Release\Valovlay-Ring3.exe`
 * J4L4N1N 94M3 54MP3 M41N M3NU
 * 4LT + T48
 * 8UK4 `Valovlay\x64\Release\Valovlay-Ring3.exe`
