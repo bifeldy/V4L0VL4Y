@@ -1,7 +1,7 @@
 #include "definitions.h"
 
-#ifndef _DUMMY_
-#define _DUMMY_
+#ifndef _DUMMY_EFI_
+#define _DUMMY_EFI_
 
 EFI_STATUS EFIAPI HookedGetTime(EFI_TIME* time, EFI_TIME_CAPABILITIES* capabilities)
 {

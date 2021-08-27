@@ -1,5 +1,5 @@
-#ifndef _DEFINITIONS_
-#define _DEFINITIONS_
+#ifndef _SUPER_EFI_INCLUDE_
+#define _SUPER_EFI_INCLUDE_
 
 #define GNU_EFI_USE_MS_ABI 1
 

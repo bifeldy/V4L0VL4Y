@@ -11,12 +11,13 @@
  *  https://forums.codeguru.com/showthread.php?258399-How-to-assign-GUID-into-a-constant-variable-in-C
  */
 
- // Our protocol GUID (should be different for every driver)
+// Our protocol GUID (should be different for every driver)
 EFI_GUID ProtocolGuid = { 0x2fac7380, 0x0c4f, 0x4c04, {0xa1, 0x5c, 0xcf, 0x00, 0x94, 0x87, 0xed, 0x1b} };
+
 // VirtualAddressMap GUID (gEfiEventVirtualAddressChangeGuid)
-EFI_GUID VirtualGuid = { 0x45cebfbc, 0x0215, 0x4e7f, { 0x91, 0xb0, 0xf0, 0xf2, 0x9e, 0x3e, 0x51, 0x6f } };
+EFI_GUID VirtualGuid = { 0x13FA7698, 0xC831, 0x49C7, { 0x87, 0xEA, 0x8F, 0x43, 0xFC, 0xC2, 0x51, 0x96 } };
 // ExitBootServices GUID (gEfiEventExitBootServicesGuid)
-EFI_GUID ExitGuid = { 0x31a3eb57, 0xe4d5, 0x4c4d, { 0xb8, 0xaf, 0x78, 0x2d, 0xcf, 0x97, 0x32, 0x96 } };
+EFI_GUID ExitGuid = { 0x27ABF055, 0xB1B8, 0x4C26, { 0x80, 0x48, 0x74, 0x8F, 0x37, 0xBA, 0xA2, 0xDF } };
 
 // Pointers to original functions
 EFI_GET_TIME oGetTime = NULL;
@@ -39,7 +40,6 @@ EFI_EVENT NotifyEvent = NULL;
 EFI_EVENT ExitEvent = NULL;
 BOOLEAN Virtual = FALSE;
 BOOLEAN Runtime = FALSE;
-BOOLEAN Cleaned = FALSE;
 
 PsLookupProcessByProcessId GetProcessByPid = (PsLookupProcessByProcessId)NULL;
 PsGetProcessSectionBaseAddress GetBaseAddress = (PsGetProcessSectionBaseAddress)NULL;
@@ -155,24 +155,24 @@ EFI_STATUS EFIAPI mySetVariable(IN CHAR16* VariableName, IN EFI_GUID* VendorGuid
 // Event callback when SetVitualAddressMap() is called by OS
 VOID EFIAPI SetVirtualAddressMapEvent(IN EFI_EVENT Event, IN VOID* Context) {
 
-    // Convert orignal SetVariable address
-    RT->ConvertPointer(0, &oSetVariable);
+    // Convert original SetVariable address
+    RT->ConvertPointer(0, (VOID**) &oSetVariable);
 
     // Convert all other addresses
-    RT->ConvertPointer(0, &oGetTime);
-    RT->ConvertPointer(0, &oSetTime);
-    RT->ConvertPointer(0, &oGetWakeupTime);
-    RT->ConvertPointer(0, &oSetWakeupTime);
-    RT->ConvertPointer(0, &oSetVirtualAddressMap);
-    RT->ConvertPointer(0, &oConvertPointer);
-    RT->ConvertPointer(0, &oGetVariable);
-    RT->ConvertPointer(0, &oGetNextVariableName);
-    // RT->ConvertPointer(0, &oSetVariable);
-    RT->ConvertPointer(0, &oGetNextHighMonotonicCount);
-    RT->ConvertPointer(0, &oResetSystem);
-    RT->ConvertPointer(0, &oUpdateCapsule);
-    RT->ConvertPointer(0, &oQueryCapsuleCapabilities);
-    RT->ConvertPointer(0, &oQueryVariableInfo);
+    RT->ConvertPointer(0, (VOID**)&oGetTime);
+    RT->ConvertPointer(0, (VOID**)&oSetTime);
+    RT->ConvertPointer(0, (VOID**)&oGetWakeupTime);
+    RT->ConvertPointer(0, (VOID**)&oSetWakeupTime);
+    RT->ConvertPointer(0, (VOID**)&oSetVirtualAddressMap);
+    RT->ConvertPointer(0, (VOID**)&oConvertPointer);
+    RT->ConvertPointer(0, (VOID**)&oGetVariable);
+    RT->ConvertPointer(0, (VOID**)&oGetNextVariableName);
+    // RT->ConvertPointer(0, (VOID**)&oSetVariable);
+    RT->ConvertPointer(0, (VOID**)&oGetNextHighMonotonicCount);
+    RT->ConvertPointer(0, (VOID**)&oResetSystem);
+    RT->ConvertPointer(0, (VOID**)&oUpdateCapsule);
+    RT->ConvertPointer(0, (VOID**)&oQueryCapsuleCapabilities);
+    RT->ConvertPointer(0, (VOID**)&oQueryVariableInfo);
 
     // Convert runtime services pointer
     RtLibEnableVirtualMappings();
@@ -202,7 +202,7 @@ VOID EFIAPI ExitBootServicesEvent(IN EFI_EVENT Event, IN VOID* Context) {
     ST->ConOut->ClearScreen(ST->ConOut);
     CHAR16* str = L"Driver seems to be working as expected! Windows is booting now...\n";
     Print(str);
-    SetMem((ptr64)str, 67 * sizeof(short), 0);
+    SetMem(str, 67 * sizeof(short), 0);
 }
 
 // Replaces service table pointer with desired one returns original
@@ -241,7 +241,7 @@ EFI_STATUS EFI_FUNCTION efi_unload(IN EFI_HANDLE ImageHandle) {
 }
 
 // EFI entry point
-EFI_STATUS EFIAPI efi_main(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* SystemTable) {
+EFI_STATUS efi_main(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* SystemTable) {
 
     // Initialize internal GNU-EFI functions
     InitializeLib(ImageHandle, SystemTable);
@@ -261,10 +261,10 @@ EFI_STATUS EFIAPI efi_main(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
     // Randomize protocol GUID
     EFI_TIME time = { 0 };
     SetMem(&time, sizeof(EFI_TIME), 0);
-    gRT->GetTime(&time, NULL);
+    RT->GetTime(&time, NULL);
     ptr64 num = time.Nanosecond + time.Second;
     if (num == 0) {
-        num = &ProtocolGuid;
+        num = (ptr64)&ProtocolGuid;
     }
     unsigned char* gdata = (unsigned char*)&ProtocolGuid;
     for (int i = 0; i < 16; i++) {
@@ -289,7 +289,7 @@ EFI_STATUS EFIAPI efi_main(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
     }
 
     // Set our image unload routine
-    LoadedImage->Unload = (EFI_IMAGE_UNLOAD)UefiUnload;
+    LoadedImage->Unload = (EFI_IMAGE_UNLOAD)efi_unload;
 
     // Create global event for VirtualAddressMap
     status = BS->CreateEventEx(EVT_NOTIFY_SIGNAL, TPL_NOTIFY, SetVirtualAddressMapEvent, NULL, VirtualGuid, &NotifyEvent);
@@ -340,9 +340,9 @@ EFI_STATUS EFIAPI efi_main(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE* Syste
     Print(L"Based in efi-memory of Samuel Tulach\n");
     Print(L"Thanks to: @Mattiwatti (EfiGuard), Roderick W. Smith (rodsbooks.com)\n\n");
     Print(L"Driver has been loaded successfully. You can now boot to the OS.\n");
-    CHAR16* pos2 = L"If you don't see a text message while booting try disable Secure Boot!.\n";
+    CHAR16* pos2 = L"If you don't see a blue screen while booting disable Secure Boot!.\n";
     Print(pos2);
-    SetMem((ptr64)fstr, ((ptr64)pos2 - (ptr64)fstr) + (68 * sizeof(short)), 0);
+    SetMem(fstr, ((ptr64)pos2 - (ptr64)fstr) + (68 * sizeof(short)), 0);
 
     return EFI_SUCCESS;
 }
