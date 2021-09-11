@@ -311,43 +311,41 @@ namespace game
     uintptr_t decryptWorld(uintptr_t pid, uintptr_t base_address)
     {
         const auto key = read<uintptr_t>(pid, base_address + offset::uworld_key);
-        std::cout << "-> key :: " << key << std::endl;
+        print("key", (void*)key);
         const auto state = read<State>(pid, base_address + offset::uworld_state);
-        std::cout << "-> state.keys :: " << state.keys << std::endl;
+        print("state.keys", (void*)state.keys);
         const auto uworld_ptr = decrypt_uworld(key, (uintptr_t*)&state);
-        std::cout << "-> uworld_ptr :: " << uworld_ptr << std::endl;
+        print("uworld_ptr", (void*)uworld_ptr);
         return read<uintptr_t>(pid, uworld_ptr);
     }
 
     void getOffset(LPVOID lpParameter)
     {
         while (true) {
-            std::cout << "Decrypting ... " << key << std::endl;
-
             uintptr_t world = decryptWorld(g_pid, g_base_address);
-            std::cout << "-> world :: " << decryptedWorld << std::endl;
+            print("world", (void*)world);
             uintptr_t game_instance = read<uintptr_t>(g_pid, world + offset::game_instance);
-            std::cout << "-> game_instance :: " << game_instance << std::endl;
+            print("game_instance", (void*)game_instance);
             uintptr_t persistent_level = read<uintptr_t>(g_pid, world + offset::persistent_level);
-            std::cout << "-> persistent_level :: " << persistent_level << std::endl;
+            print("persistent_level", (void*)persistent_level);
             uintptr_t local_player_array = read<uintptr_t>(g_pid, game_instance + offset::local_player_array);
-            std::cout << "-> local_player_array :: " << local_player_array << std::endl;
+            print("local_player_array", (void*)local_player_array);
             uintptr_t local_player = read<uintptr_t>(g_pid, local_player_array);
-            std::cout << "-> local_player :: " << local_player << std::endl;
+            print("local_player", (void*)local_player);
             uintptr_t local_player_controller = read<uintptr_t>(g_pid, local_player + offset::local_player_controller);
-            std::cout << "-> local_player_controller :: " << local_player_controller << std::endl;
+            print("local_player_controller", (void*)local_player_controller);
             uintptr_t local_player_pawn = read<uintptr_t>(g_pid, local_player_controller + offset::local_player_pawn);
-            std::cout << "-> local_player_pawn :: " << local_player_pawn << std::endl;
+            print("local_player_pawn", (void*)local_player_pawn);
             uintptr_t local_damage_handler = read<uintptr_t>(g_pid, local_player_pawn + offset::damage_handler);
-            std::cout << "-> local_damage_handler :: " << local_damage_handler << std::endl;
+            print("local_damage_handler", (void*)local_damage_handler);
             uintptr_t local_player_state = read<uintptr_t>(g_pid, local_player_pawn + offset::player_state);
-            std::cout << "-> local_player_state :: " << local_player_state << std::endl;
+            print("local_player_state", (void*)local_player_state);
             uintptr_t local_team_component = read<uintptr_t>(g_pid, local_player_state + offset::team_component);
-            std::cout << "-> local_team_component :: " << local_team_component << std::endl;
+            print("local_team_component", (void*)local_team_component);
             uintptr_t camera_manager = read<uintptr_t>(g_pid, local_player_controller + offset::camera_manager);
-            std::cout << "-> camera_manager :: " << camera_manager << std::endl;
+            print("camera_manager", (void*)camera_manager);
             uintptr_t actor_array = read<uintptr_t>(g_pid, persistent_level + offset::actor_array);
-            std::cout << "-> actor_array :: " << actor_array << std::endl;
+            print("actor_array", (void*)actor_array);
 
             int local_team_id = read<int>(g_pid, local_team_component + offset::team_id);
             int actor_count = read<int>(g_pid, persistent_level + offset::actor_count);
@@ -381,6 +379,10 @@ namespace game
             {
                 runRenderTick();
                 handleOtherKeyPresses();
+
+                if (GetAsyncKeyState(VK_F11) & 1) {
+                    toggleDebugLog();
+                }
 
                 if (GetAsyncKeyState(VK_F12) & 1) {
                     break;

@@ -16,6 +16,7 @@
 
 namespace base
 {
+    static bool g_debugLog = true;
 
     static int g_width;
     static int g_height;
@@ -30,6 +31,22 @@ namespace base
     static GLFWwindow* g_window;
 
     static HWND valorantWindow;
+
+    void toggleDebugLog() {
+        g_debugLog = !g_debugLog;
+    }
+
+    void print(std::string variableName) {
+        if (g_debugLog) {
+            std::cout << variableName << std::endl;
+        }
+    }
+
+    void print(std::string variableName, void* variableValue) {
+        if (g_debugLog) {
+            std::cout << "-> " << variableName << " :: " << variableValue << std::endl;
+        }
+    }
 
     std::wstring s2ws(const std::string& str)
     {
@@ -59,20 +76,20 @@ namespace base
 
     void glfwErrorCallback(int error, const char* description)
     {
-        std::cout << "Glfw Error :: " << error << " :: " << description << std::endl;
+        print("Glfw Error :: " + std::to_string(error) + " :: " + description);
     }
 
     bool setupWindow()
     {
         glfwSetErrorCallback(glfwErrorCallback);
         if (!glfwInit()) {
-            std::cout << "glfwInit Not Work!" << std::endl;
+            print("glfwInit Not Work!");
             return false;
         }
 
         monitor = glfwGetPrimaryMonitor();
         if (!monitor) {
-            std::cout << "Failed To Get Primary Monitor!" << std::endl;
+            print("Failed To Get Primary Monitor!");
             return false;
         }
 
@@ -90,7 +107,7 @@ namespace base
 
         g_window = glfwCreateWindow(g_width, g_height, "Word", NULL, NULL);
         if (g_window == NULL) {
-            std::cout << "Could Not Create Window!" << std::endl;
+            print("Could Not Create Window!");
             return false;
         }
 
@@ -106,7 +123,7 @@ namespace base
 
         if (glewInit() != GLEW_OK)
         {
-            std::cout << "Failed To Initialize OpenGL Loader!" << std::endl;
+            print("Failed To Initialize OpenGL Loader!");
             return false;
         }
 
@@ -120,7 +137,7 @@ namespace base
         ImGui_ImplGlfw_InitForOpenGL(g_window, true);
         ImGui_ImplOpenGL3_Init("#version 130");
 
-        std::cout << "Loading Font Roboto-Light.ttf ..." << std::endl;
+        print("Loading Font Roboto-Light.ttf ...");
         ImFont* font = io.Fonts->AddFontFromFileTTF("Roboto-Light.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 
         return true;
@@ -170,37 +187,37 @@ namespace base
 
     bool initialize()
     {
-        std::cout << "Getting Valorant Process Id ..." << std::endl;
+        print("Getting Valorant Process Id ...");
         g_pid = getValorantPid();
         if (!g_pid) {
-            std::cout << "Could Not Find Valorant Process Id!" << std::endl;
+            print("Could Not Find Valorant Process Id!");
             return false;
         }
-        std::cout << "-> g_pid :: " << g_pid << std::endl;
+        print("g_pid", (void*)g_pid);
 
-        std::cout << "Getting Valorant Game Window ..." << std::endl;
+        print("Getting Valorant Game Window ...");
         EnumWindows(getValorantWindow, NULL);
         if (!valorantWindow) {
-            std::cout << "Could Not Find Valorant Window!" << std::endl;
+            print("Could Not Find Valorant Window!");
             return false;
         }
-        std::cout << "-> valorantWindow :: " << valorantWindow << std::endl;
+        print("valorantWindow", valorantWindow);
 
-        std::cout << "Getting Base Address ..." << std::endl;
+        print("Getting Base Address ...");
         g_base_address = driver::GetBaseAddress(g_pid);
         if (!g_base_address) {
-            std::cout << "Could Not Get Base Address!" << std::endl;
+            print("Could Not Get Base Address!");
             return false;
         }
-        std::cout << "-> g_base_address :: " << g_base_address << std::endl;
+        print("g_base_address", (void*)g_base_address);
 
-        std::cout << "Setting Up ImgUI Overlay ..." << std::endl;
+        print("Setting Up ImgUI Overlay ...");
         setupWindow();
         if (!g_window) {
-            std::cout << "Could Not Setup Window Overlay!" << std::endl;
+            print("Could Not Setup Window Overlay!");
             return false;
         }
-        std::cout << "-> g_window :: " << g_window << std::endl;
+        print("g_window", (void*)g_window);
 
         return true;
     }
